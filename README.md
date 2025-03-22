@@ -7,7 +7,7 @@ It supports both **OpenAI's cloud models** and **local LLMs via Ollama**, giving
 
 ## 🚀 Features
 
-- 🌐 **Cloud + Local**: Seamlessly switch between OpenAI and Ollama.
+- 🌐 **Cloud + Local**: Seamlessly switch between OpenAI, Anthropic, xAI and Ollama.
 - 💬 **Streaming Responses**: Smooth, live Markdown rendering of output.
 - 📍 **Location-Aware**: Built-in web tool uses your location to improve relevance.
 - 🔧 **Configurable**: Change models, temperature, and mode via `config.json` or live commands.
