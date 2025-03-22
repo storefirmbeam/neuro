@@ -1,0 +1,11 @@
+{
+    "model": "gpt-4o",
+    "user_location": {
+      "country": "US",
+      "city": "Athens",
+      "region": "Alabama",
+      "timezone": "America/Chicago"
+    },
+    "local_mode": false,
+    "search_context_size": "medium"
+  }

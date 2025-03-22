@@ -1,0 +1,25 @@
+{
+    "OpenAI": [
+        "gpt-4.5-preview",
+        "gpt-4o",
+        "gpt-4o-mini",
+        "gpt-4",
+        "o3-mini",
+        "o1-pro",
+        "o1-mini",
+        "o1"
+    ],
+    "Anthropic": [
+        "claude-3.7-sonnet-latest",
+        "claude-3.5-haiku-latest"
+    ],
+    "Grok": [
+        "grok-2-latest"
+    ],
+
+    "Local": [
+        "Any of your Ollama models.",
+        " [1] Ensure to set 'Local' to true in the config.json file.",
+        " [2] Ensure to set the 'model' to the model name in config.json."
+    ]
+}
