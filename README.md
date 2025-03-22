@@ -1,13 +1,13 @@
 # 🧠 neuro — Terminal AI Assistant
 
 **neuro** is a flexible, fast, and developer-friendly terminal-based AI assistant.  
-It supports both **OpenAI's cloud models** and **local LLMs via Ollama**, giving you total control over your AI experience — online or offline.
+It supports both **OpenAI's, Anthropic's, and xAI's cloud models** and **local LLMs via Ollama**, giving you total control over your AI experience — online or offline.
 
 ---
 
 ## 🚀 Features
 
-- 🌐 **Cloud + Local**: Seamlessly switch between OpenAI, Anthropic, xAI and Ollama.
+- 🌐 **Cloud + Local**: Seamlessly switch between OpenAI, Anthropic, xAI, and Ollama.
 - 💬 **Streaming Responses**: Smooth, live Markdown rendering of output.
 - 📍 **Location-Aware**: Built-in web tool uses your location to improve relevance.
 - 🔧 **Configurable**: Change models, temperature, and mode via `config.json` or live commands.
