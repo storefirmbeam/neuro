@@ -22,7 +22,7 @@ It supports both **OpenAI's, Anthropic's, and xAI's cloud models** and **local L
 ```bash
 git clone https://github.com/yourname/neuro
 cd neuro
-python3 -m venv Ai
+python -m venv Ai
 source Ai/bin/activate
 pip install -r requirements.txt
 ```
@@ -33,16 +33,16 @@ pip install -r requirements.txt
 
 ## 🧰 Configuration
 
-Create a `config.json` in the root folder:
+Edit the `config.json` in the 'configs' directory:
 
 ```json
 {
   "model": "gpt-4o",
   "user_location": {
     "country": "US",
-    "city": "Athens",
-    "region": "Alabama",
-    "timezone": "America/Chicago"
+    "city": "your-city",
+    "region": "your-region",
+    "timezone": "your-timezone"
   },
   "local_mode": false,
   "search_context_size": "medium"
