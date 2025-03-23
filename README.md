@@ -127,16 +127,15 @@ python main.py
 - ✅ CLI flag for `--model` and `--local`
 - 🔲 `:saveconfig` to persist runtime changes
 - 🔲 Session export as `.txt` or `.json`
-- 🔲 Voice-to-text input with `:voice`
 - 🔲 Shell command execution in context
 
 ---
 
 ## 🙏 Credits
-
-- Terminal UI: [Textual](https://www.textualize.io/) inspiration via `rich`
 - Local LLM backend: [Ollama](https://ollama.com)
-- Cloud models via [OpenAI](https://openai.com)
+- Cloud model via [OpenAI](https://openai.com)
+- Cloud model via [Anthropic](https://anthropic.com)
+- Cloud model via [xAI](https://xai.com)
 
 ---
 
