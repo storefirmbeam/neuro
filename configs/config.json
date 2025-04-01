@@ -2,9 +2,9 @@
   "model": "gpt-4o",
   "user_location": {
     "country": "US",
-    "city": "your-city",
-    "region": "your-region",
-    "timezone": "your-timezone"
+    "city": "Wichita",
+    "region": "Kansas",
+    "timezone": "America/Chicago"
   },
   "local_mode": false,
   "search_context_size": "medium"

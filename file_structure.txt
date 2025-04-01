@@ -1,0 +1,25 @@
+neuro/
+├── commands/
+│   ├── __init__.py
+│   ├── clear.py        # :clear logic
+│   ├── config.py       # :config logic
+│   ├── debug.py        # :debug logic
+│   ├── help.py         # :help logic
+│   ├── models.py       # :models logic
+│   ├── refresh.py      # :refresh logic
+│   ├── run.py          # :run logic
+│   ├── setlocal.py     # :setlocal logic
+│   ├── setmodel.py     # :setmodel logic
+│   └── autopilot.py    # future :autopilot
+├── utils/
+│   └── code.py         # code block extractors
+├── .env
+├── .gitignore
+├── ai_stream.py
+├── cli.py              # CLI entrypoint only
+├── file_structure.txt
+├── header.py
+├── main.py
+├── sandbox.py
+├── README.md
+└──requirements.txt
