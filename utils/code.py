@@ -3,7 +3,7 @@ import re
 
 def extract_code_from_message(message: str) -> str:
     # Try to extract triple-backtick code block
-    code_blocks = re.findall(r"```(?:python)?\n(.*?)```", message, re.DOTALL)
+    code_blocks = re.findall(r"```python\n(.*?)```", message, re.DOTALL)
     if code_blocks:
         return code_blocks[0].strip()
     
