@@ -2,7 +2,7 @@
 import re
 from rich.panel import Panel
 from ai_stream import stream_chat
-from sandbox import run_code_in_docker
+from utils.sandbox import run_steps_in_docker
 from utils.code import extract_code_from_message
 
 def handle_debug(memory, console, config, last_error_output):
@@ -28,7 +28,7 @@ def handle_debug(memory, console, config, last_error_output):
             fixed_code = extract_code_from_message(fixed_response)
 
             console.print("\n[yellow]Attempting to run fixed code...[/yellow]")
-            output = run_code_in_docker(fixed_code)
+            output = run_steps_in_docker(fixed_code)
             console.print(Panel.fit(output, title="Fixed Execution Output", border_style="green"))
             return output
 

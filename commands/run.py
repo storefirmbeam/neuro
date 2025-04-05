@@ -1,20 +1,20 @@
 # commands/run.py
-import re
 from rich.panel import Panel
-from sandbox import run_code_in_docker
-from utils.code import extract_code_from_message
+from utils.sandbox import run_steps_in_docker
+from utils.parsers import parse_ai_response
 
 def handle_run(memory, console):
     for m in reversed(memory):
         if m["role"] == "assistant":
-            code = extract_code_from_message(m["content"])
-            if not code:
-                console.print("[red]No code block found to execute.[/]")
+            steps = parse_ai_response(m["content"])
+            if not steps:
+                console.print("[red]No runnable steps found in assistant message.[/]")
                 return None
 
-            output = run_code_in_docker(code)
+            console.print("[purple]🚀 Executing parsed steps...[/purple]\n")
+            output = run_steps_in_docker(steps)
             console.print(Panel.fit(output, title="Execution Output", border_style="green"))
             return output
 
-    console.print("[red]No assistant message with code found.[/]")
+    console.print("[red]No assistant message found to execute.[/]")
     return None

@@ -1,7 +1,6 @@
 import argparse
 import pyperclip
 from ai_stream import stream_chat#, use_web_search
-from sandbox import run_code_in_docker  # top of file
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -11,6 +10,8 @@ from header import print_header
 import json
 import shutil
 from commands import handle_command
+import readline  # Enables arrow key history navigation
+from utils.input import multiline_input  # For multiline input in the terminal
 
 console = Console()
 
@@ -95,10 +96,18 @@ def main():
 
     while True:
         try:
-            user_input = input("> ").strip()
+            #user_input = input("> ").strip()
+            user_input = multiline_input("> ").strip()  # Use multiline input for better UX
+            if not user_input:
+                console.print("[bold red]⛔ Empty input, please try again.[/]")
+                continue
             print("\n")
             if user_input.startswith(":"):
                 result = handle_command(user_input, chat_memory, config, console, last_error_output, models_dict)
+                
+                if not user_input == ":clear":
+                    print("\n")
+
                 if result is not False:
                     last_error_output = result  # ✅ Capture output from :run or :debug
                     continue

@@ -12,6 +12,7 @@ neuro/
 │   ├── setmodel.py     # :setmodel logic
 │   └── autopilot.py    # future :autopilot
 ├── utils/
+│   ├── sandbox.py      # sandbox logic
 │   └── code.py         # code block extractors
 ├── .env
 ├── .gitignore

@@ -1,0 +1,29 @@
+FROM kalilinux/kali-rolling
+
+# Prevent interactive prompts during installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update and install essential tools
+RUN apt update && apt full-upgrade -y && \
+    apt install -y \
+    python3 python3-pip \
+    iputils-ping curl git wget \
+    net-tools nmap \
+    zsh nano vim \
+    build-essential \
+    sudo \
+    && apt clean
+
+# Optional: create a non-root user (for safer tool use)
+ARG USER=neuro
+RUN useradd -m -s /bin/bash $USER && \
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Switch to non-root user (optional)
+USER $USER
+WORKDIR /home/$USER
+
+# Set Python alias
+RUN sudo ln -s /usr/bin/python3 /usr/bin/python || true
+
+CMD ["bash"]
