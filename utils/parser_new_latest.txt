@@ -1,0 +1,107 @@
+#--- Refactored: test_parser.py ---
+
+import re
+import uuid
+import hashlib
+from typing import List, Dict, Union, Optional
+from rich.console import Console
+from rich.table import Table
+
+class LogicalStep:
+    def __init__(self, content: str, language: Optional[str] = None, filename: Optional[str] = None, execute: bool = False):
+        self.id = str(uuid.uuid4())
+        self.content = content.strip()
+        self.language = language or detect_language(content)
+        self.filename = filename
+        self.execute = execute
+        self.hash = hashlib.sha256(self.content.encode()).hexdigest()
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "language": self.language,
+            "filename": self.filename,
+            "execute": self.execute
+        }
+
+def detect_language(code: str) -> str:
+    if "import" in code and "def" in code:
+        return "python"
+    elif "#!/bin/bash" in code or re.search(r"\\b(?:sudo|apt|cd|ls|rm|mv|touch|python|bash)\\b", code):
+        return "bash"
+    elif "<html>" in code:
+        return "html"
+    return "unknown"
+
+
+def parse_ai_response(response: str) -> List[Dict[str, Union[str, None]]]:
+    code_blocks = re.findall(r"```(?:([\w+-]+)?\n)?(.*?)```", response, re.DOTALL)
+    instructions = response.splitlines()
+
+    steps = []
+    filenames = re.findall(r"(?:save|create).+?`([^`]+)`", response, re.IGNORECASE)
+    exec_hints = re.findall(r"(?:run|execute|python|bash)\s+`?([^`\s]+)`?", response, re.IGNORECASE)
+
+    # Include run/exec filenames not explicitly declared
+    for hint in exec_hints:
+        if hint not in filenames:
+            filenames.append(hint)
+
+    existing_hashes = set()
+    file_idx = 0
+
+    for lang, code in code_blocks:
+        code = code.strip()
+        language = lang if lang else detect_language(code)
+
+        if language in ["unknown", "output"]:
+            continue  # Skip non-code or output blocks
+
+        # Assign filename
+        if file_idx < len(filenames):
+            filename = filenames[file_idx]
+            file_idx += 1
+        else:
+            ext = {"python": "py", "bash": "sh"}.get(language, language)
+            filename = f"snippet.{ext}"
+
+        # Look ahead in bash to infer python filenames
+        if language == "bash" and "python" in code:
+            match = re.search(r"python\s+([a-zA-Z0-9_\-./]+\.py)", code)
+            if match:
+                inferred_file = match.group(1)
+                if inferred_file not in filenames:
+                    filenames.append(inferred_file)
+
+        # Decide if this step should be executed
+        matched_exec = any(filename and filename in e for e in exec_hints)
+        if language == "bash":
+            if any(kw in code.lower() for kw in ["python", "bash", "./", "apt", "pip", "make", "curl", "wget"]):
+                matched_exec = True
+
+        # Deduplicate steps by content hash
+        step_hash = hashlib.sha256(code.encode()).hexdigest()
+        if step_hash in existing_hashes:
+            continue
+        existing_hashes.add(step_hash)
+
+        steps.append(LogicalStep(code, language, filename, execute=matched_exec))
+
+    # fallback: single script block = execute
+    if len(steps) == 1 and steps[0].language in ["python", "bash"]:
+        steps[0].execute = True
+
+    # Output step table
+    console = Console()
+    table = Table(title="Logical Steps", show_lines=True)
+    table.add_column("Lang", style="magenta")
+    table.add_column("File", style="green")
+    table.add_column("Execute", style="cyan")
+    table.add_column("Content", style="white")
+
+    for step in steps:
+        table.add_row(step.language, str(step.filename), str(step.execute), step.content)
+
+    console.print(table)
+    return [step.to_dict() for step in steps]
