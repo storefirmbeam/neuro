@@ -1,0 +1,22 @@
+neuro2/
+  main.py
+  .env
+  file_structure.txt
+  memory.md
+  pytest.ini
+  sandbox/                <- stays here
+    Dockerfile
+    runner.py
+    Dockerfile
+    Makefile
+  src/
+    core/
+      runtime.py
+      registry.py
+    tools/
+      sandbox.py          <- calls the built image tag
+      homeassistant.py
+  tests/
+    conftest.py
+    test_homeassistant_tools.py
+  venv/
