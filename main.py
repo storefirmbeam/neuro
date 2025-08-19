@@ -13,6 +13,10 @@ from src.tools import homeassistant  # noqa: F401
 from src.core.runtime import run_repl
 
 LOG_FILE = os.path.expanduser("memory.md")
+
+# Ensure the file exists
+open(LOG_FILE, "a").close()
+
 client = OpenAI()
 
 if __name__ == "__main__":

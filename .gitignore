@@ -1,3 +1,5 @@
 .pytest_cache
 .env
 venv
+venv_docker
+memory.md
