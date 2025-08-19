@@ -17,6 +17,8 @@ def _project_root() -> Path:
     # this file: .../src/tools/sandbox.py -> repo root is parents[2]
     return Path(__file__).resolve().parents[2]
 
+PROJECT_ROOT = _project_root()  # <-- define it
+
 def _sandbox_root() -> Path:
     root = Path(os.getenv("SANDBOX_DIR", PROJECT_ROOT / "sandbox" / "workspace")).expanduser()
     root.mkdir(parents=True, exist_ok=True)  # create on first run
