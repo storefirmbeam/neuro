@@ -18,10 +18,8 @@ def _project_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 def _sandbox_root() -> Path:
-    # Allow override; otherwise use <repo>/sandbox
-    env = os.getenv("SANDBOX_DIR", "").strip()
-    root = Path(env).expanduser() if env else (_project_root() / "sandbox")
-    root.mkdir(parents=True, exist_ok=True)
+    root = Path(os.getenv("SANDBOX_DIR", PROJECT_ROOT / "sandbox" / "workspace")).expanduser()
+    root.mkdir(parents=True, exist_ok=True)  # create on first run
     return root
 
 ROOT = _sandbox_root()

@@ -3,3 +3,4 @@
 venv
 venv_docker
 memory.md
+__pycache__/
