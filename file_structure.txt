@@ -16,6 +16,11 @@ neuro2/
     tools/
       sandbox.py          <- calls the built image tag
       homeassistant.py
+    cli/
+      commands.py
+      header.py
+      input_ui.py
+      pretty.py
   tests/
     conftest.py
     test_homeassistant_tools.py

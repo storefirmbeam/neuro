@@ -4,7 +4,7 @@ from openai import OpenAI
 import os
 import argparse
 
-load_dotenv()
+load_dotenv(override=True)
 
 from src.tools import sandbox  # noqa: F401
 from src.tools import homeassistant  # noqa: F401
