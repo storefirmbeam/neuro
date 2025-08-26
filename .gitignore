@@ -3,4 +3,12 @@
 venv
 venv_docker
 memory.md
+
+# macOS
+.DS_Store
+._*
+
+# Python
 __pycache__/
+*.pyc
+*.pyo
