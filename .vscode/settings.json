@@ -1,3 +1,2 @@
 {
-  "python.defaultInterpreterPath": "${env:NEURO_PY}"
 }

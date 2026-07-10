@@ -14,7 +14,7 @@ def _banner_fn(ctx: dict):
     except Exception:
         console.rule(f"[bold cyan]NEURO[/]  [dim]{ctx.get('model','')}[/dim]")
 
-def run(client, log_file: str, default_model: str = "gpt-5-mini"):
+def run(client, log_file: str, default_model: str = "gpt-5.4-mini"):
     from src.core.runtime import run_repl
 
     # live context so :config and header reflect updates

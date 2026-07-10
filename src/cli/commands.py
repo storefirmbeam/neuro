@@ -16,10 +16,9 @@ HELP_TEXT = """[bold cyan]:commands[/]
 """
 
 EXAMPLE_MODELS = [
-    "gpt-5-mini",
-    "gpt-5",
-    "gpt-4.1-mini",
-    "o3-mini",
+    "gpt-5.5",
+    "gpt-5.4-nano",
+    "gpt-5.4-mini",
 ]
 
 def _models_table():
@@ -67,6 +66,10 @@ def command_handler_factory(context_getter):
             ctx = context_getter() or {}
             console.print(f"[cyan]Model:[/] {ctx.get('model')}")
             console.print(f"[cyan]Log file:[/] {ctx.get('log_file')}")
+            return {"handled": True}
+
+        if c == ":":
+            console.print(HELP_TEXT)
             return {"handled": True}
 
         return {"handled": False}

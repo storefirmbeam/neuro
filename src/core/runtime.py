@@ -3,8 +3,10 @@ import sys, json, pathlib, os
 from openai import OpenAI, BadRequestError
 from typing import Callable, Optional
 from prompt_toolkit.patch_stdout import patch_stdout
+from rich.console import Console
 from .registry import as_openai_tools, get_tool
 
+console = Console()
 
 def _ensure_json_payload(s: str) -> str:
     try:
@@ -225,6 +227,9 @@ def run_repl(
                     full_text, prev_id, tool_call, raw_args, _ = stream_once(user, None)
                 else:
                     raise
+            except Exception as e:
+                console.print(f"[bold red]\nERROR:[/] {e}\n")
+                continue
 
             # ------ tool loop ------
             last_tool_name = None
