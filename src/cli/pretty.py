@@ -31,16 +31,21 @@ def _banner_fn(ctx: dict) -> None:
 
 @contextmanager
 def live_markdown_stream() -> Iterator[Callable[[str], None]]:
+    """Render accumulated Markdown while the response streams."""
+
     with Live(
         Markdown(""),
         console=console,
         refresh_per_second=15,
         transient=False,
-        vertical_overflow="visible",
+        vertical_overflow="ellipsis",
     ) as live:
 
         def update(text: str) -> None:
-            live.update(Markdown(text))
+            live.update(
+                Markdown(text),
+                refresh=True,
+            )
 
         yield update
 
