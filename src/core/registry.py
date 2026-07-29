@@ -1,5 +1,6 @@
 # src/core/registry.py
 from __future__ import annotations
+import os
 from typing import Callable, Dict, Any, Optional, List
 
 class ToolSpec:
@@ -69,3 +70,17 @@ def as_openai_tools() -> List[dict]:
     - Uses each ToolSpec's JSON schema so the model sends correct kwargs.
     """
     return [spec.to_openai_tool() for spec in _registry.values()]
+
+def runtime_tools():
+    return [
+        *as_openai_tools(),   # local Neuro tools from registry.py
+        {
+            "type": "web_search",
+            "user_location": {
+                "type": "approximate",
+                "country": "US",
+                "city": os.getenv("CITY"),
+                "region": os.getenv("STATE")
+            }
+        },
+    ]

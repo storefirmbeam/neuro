@@ -4,7 +4,7 @@ from openai import OpenAI, BadRequestError
 from typing import Callable, Optional
 from prompt_toolkit.patch_stdout import patch_stdout
 from rich.console import Console
-from .registry import as_openai_tools, get_tool
+from .registry import runtime_tools, get_tool
 
 console = Console()
 
@@ -32,7 +32,7 @@ def run_repl(
     *, 
     client: OpenAI, 
     log_file: str, 
-    model: str = "gpt-5-mini",
+    model: str = "gpt-5.6-sol",
     input_fn: Optional[Callable[[str], str]] = None,
     banner_fn: Optional[Callable[[dict], None]] = None,
     command_handler: Optional[Callable[[str], dict]] = None,
@@ -101,7 +101,8 @@ def run_repl(
             with client.responses.stream(
                 model=current_model,
                 input=input_payload,
-                tools=as_openai_tools(),
+                tools=runtime_tools(),
+                # tool_choice="auto",
                 parallel_tool_calls=False,
                 previous_response_id=prev_id,
             ) as stream:
