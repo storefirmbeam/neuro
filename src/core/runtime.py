@@ -12,6 +12,7 @@ from typing import Any, Callable, Optional
 from openai import BadRequestError, OpenAI
 from prompt_toolkit.patch_stdout import patch_stdout
 from rich.console import Console
+from contextlib import nullcontext
 
 from .registry import get_tool, runtime_tools
 
@@ -200,7 +201,13 @@ def _stream_response(
         "previous_response_id": previous_response_id,
     }
 
-    with patch_stdout(raw=True):
+    stdout_context = (
+        nullcontext()
+        if stream_callback is not None
+        else patch_stdout(raw=True)
+    )
+
+    with stdout_context:
         with client.responses.stream(**request_options) as stream:
             for event in stream:
                 event_type = event.type
