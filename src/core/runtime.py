@@ -576,8 +576,6 @@ def run_repl(
 
             last_response_id = result.response_id
 
-            last_response_id = result.response_id
-
         except KeyboardInterrupt:
             print("\n[ctrl-c] (use :quit to exit)\n")
 

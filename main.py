@@ -14,6 +14,8 @@ from openai import OpenAI
 from rich.console import Console
 from rich.markdown import Markdown
 
+from src.cli.pretty import live_markdown_stream
+
 # Importing these modules registers their tools with Neuro.
 from src.tools import homeassistant  # noqa: F401
 from src.tools import sandbox  # noqa: F401
@@ -172,20 +174,30 @@ def run_inline(
     if command_mode:
         prompt = f"Only output the shell command:\n\n{prompt}"
 
-    result = run_once(
-        client=client,
-        prompt=prompt,
-        log_file=str(LOG_FILE),
-        model=model,
-        emit_output=False,
-    )
-
-    output = result.text.strip()
-
+    # Command and quiet modes must remain plain for shell usage,
+    # pipes, command substitution, and scripts.
     if command_mode or quiet:
-        print(output)
-    else:
-        console.print(Markdown(output))
+        result = run_once(
+            client=client,
+            prompt=prompt,
+            log_file=str(LOG_FILE),
+            model=model,
+            emit_output=False,
+        )
+
+        print(result.text.strip())
+        return 0
+
+    # Normal inline mode streams through Rich Live Markdown.
+    with live_markdown_stream() as stream_callback:
+        run_once(
+            client=client,
+            prompt=prompt,
+            log_file=str(LOG_FILE),
+            model=model,
+            emit_output=False,
+            stream_callback=stream_callback,
+        )
 
     return 0
 
