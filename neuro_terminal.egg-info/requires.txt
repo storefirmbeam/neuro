@@ -1,0 +1,5 @@
+openai>=2.45.0
+python-dotenv>=1.0.0
+prompt-toolkit>=3.0.0
+requests>=2.0.0
+rich>=13.0.0
