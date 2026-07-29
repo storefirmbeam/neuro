@@ -178,6 +178,7 @@ def _stream_response(
     previous_response_id: str | None,
     instructions: str | None,
     emit_output: bool,
+    stream_callback: Callable[[str], None] | None = None,
 ) -> tuple[str, str | None, dict[str, Any] | None, str, Any]:
     """
     Stream one Responses API request.
@@ -217,7 +218,9 @@ def _stream_response(
 
                     text_buffer.append(delta)
 
-                    if emit_output:
+                    if stream_callback:
+                        stream_callback("".join(text_buffer))
+                    elif emit_output:
                         sys.stdout.write(delta)
                         sys.stdout.flush()
 
@@ -305,6 +308,7 @@ def run_turn(
     previous_response_id: str | None = None,
     instructions: str | None = None,
     emit_output: bool = True,
+    stream_callback: Callable[[str], None] | None = None,
 ) -> TurnResult:
     """
     Run one complete Neuro turn.
@@ -338,6 +342,7 @@ def run_turn(
             previous_response_id=previous_response_id,
             instructions=instructions,
             emit_output=emit_output,
+            stream_callback=stream_callback,
         )
 
     except BadRequestError as error:
@@ -363,6 +368,7 @@ def run_turn(
                 previous_response_id=None,
                 instructions=instructions,
                 emit_output=emit_output,
+                stream_callback=stream_callback,
             )
         else:
             raise
@@ -370,6 +376,8 @@ def run_turn(
     last_tool_name: str | None = None
     last_tool_input_len = 0
     last_tool_output_preview = ""
+
+    streamed_text = full_text
 
     while tool_call:
         tool_name = tool_call.get("name") or "<unknown>"
@@ -391,6 +399,10 @@ def run_turn(
             }
         ]
 
+        def chained_stream_callback(text: str) -> None:
+            if stream_callback:
+                stream_callback(streamed_text + text)
+
         (
             post_text,
             response_id,
@@ -404,9 +416,11 @@ def run_turn(
             previous_response_id=response_id,
             instructions=instructions,
             emit_output=emit_output,
+            stream_callback=chained_stream_callback,
         )
 
         full_text += post_text
+        streamed_text = full_text
 
     _append_log(
         log_file=log_file,
@@ -434,6 +448,7 @@ def run_once(
     model: str = "gpt-5.6-sol",
     instructions: str | None = None,
     emit_output: bool = True,
+    stream_callback: Callable[[str], None] | None = None,
 ) -> TurnResult:
     """
     Run one inline Neuro request.
@@ -450,8 +465,8 @@ def run_once(
         previous_response_id=None,
         instructions=instructions,
         emit_output=emit_output,
+        stream_callback=stream_callback,
     )
-
 
 def run_repl(
     *,
@@ -461,6 +476,7 @@ def run_repl(
     input_fn: Optional[Callable[[str], str]] = None,
     banner_fn: Optional[Callable[[dict], None]] = None,
     command_handler: Optional[Callable[[str], dict]] = None,
+    stream_context_factory: Optional[Callable[[], Any]] = None,
 ) -> None:
     """Run Neuro's interactive conversation interface."""
 
@@ -536,14 +552,29 @@ def run_repl(
                 print("🧹 Started a fresh thread.")
                 continue
 
-            result = run_turn(
-                client=client,
-                user=user,
-                model=current_model,
-                log_file=str(log_path),
-                previous_response_id=last_response_id,
-                emit_output=True,
-            )
+            if stream_context_factory:
+                with stream_context_factory() as stream_callback:
+                    result = run_turn(
+                        client=client,
+                        user=user,
+                        model=current_model,
+                        log_file=str(log_path),
+                        previous_response_id=last_response_id,
+                        emit_output=False,
+                        stream_callback=stream_callback,
+                    )
+            else:
+                result = run_turn(
+                    client=client,
+                    user=user,
+                    model=current_model,
+                    log_file=str(log_path),
+                    previous_response_id=last_response_id,
+                    emit_output=True,
+                    stream_callback=None,
+                )
+
+            last_response_id = result.response_id
 
             last_response_id = result.response_id
 
